@@ -35,86 +35,22 @@ import {
   Block,
   CheckCircle
 } from '@mui/icons-material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import studentService from '../../../services/studentService';
 
 const StudentDetailsView = ({ studentId }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogType, setDialogType] = useState('');
+  const [student, setStudent] = useState(null);
 
-  // Sample student data
-  const student = {
-    id: 1,
-    name: 'John Doe',
-    rollNo: 'CSE001',
-    registrationNo: 'REG2020001',
-    batch: '2020-24',
-    branch: 'Computer Science',
-    section: 'A',
-    semester: '7',
-    email: 'john.doe@example.com',
-    phone: '+1234567890',
-    photo: '/path/to/photo.jpg',
-    status: 'active',
-    cgpa: 8.5,
-    backlogs: 0,
-    attendance: '85%',
-    placementStatus: 'Placed',
-    currentPackage: '12 LPA',
-    skills: ['Python', 'Java', 'React', 'Node.js'],
-    certifications: [
-      {
-        name: 'AWS Certified Developer',
-        issuer: 'Amazon',
-        date: '2023-05-15',
-        credential: 'AWS-123'
-      }
-    ],
-    internships: [
-      {
-        company: 'Tech Corp',
-        role: 'Software Intern',
-        duration: '3 months',
-        year: '2023'
-      }
-    ],
-    academics: {
-      semesters: [
-        {
-          semester: 1,
-          sgpa: 8.2,
-          backlogs: 0,
-          attendance: '90%'
-        }
-        // Add more semesters...
-      ],
-      projects: [
-        {
-          title: 'E-commerce Platform',
-          description: 'Built using MERN stack',
-          status: 'Completed',
-          grade: 'A'
-        }
-      ]
-    },
-    documents: [
-      {
-        name: 'Admission Letter',
-        type: 'PDF',
-        uploadDate: '2020-08-15'
-      }
-      // Add more documents...
-    ],
-    activities: [
-      {
-        type: 'Club',
-        name: 'Coding Club',
-        role: 'Secretary',
-        year: '2022-23'
-      }
-      // Add more activities...
-    ]
-  };
+  useEffect(() => {
+    const fetchStudent = async () => {
+      const data = await studentService.getStudentById(studentId);
+      setStudent(data);
+    };
+    fetchStudent();
+  }, [studentId]);
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -123,6 +59,14 @@ const StudentDetailsView = ({ studentId }) => {
   const handleAction = (type) => {
     setDialogType(type);
     setOpenDialog(true);
+  };
+
+  const handleDeleteDocument = async (documentId) => {
+    await studentService.deleteDocument(studentId, documentId);
+    setStudent((prev) => ({
+      ...prev,
+      documents: prev.documents.filter((doc) => doc.id !== documentId)
+    }));
   };
 
   const renderPersonalInfo = () => (
@@ -284,6 +228,39 @@ const StudentDetailsView = ({ studentId }) => {
     </Grid>
   );
 
+  const renderDocuments = () => (
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Typography variant="h6" gutterBottom>
+          Documents
+        </Typography>
+        <Table>
+          <TableBody>
+            {student.documents.map((doc, index) => (
+              <TableRow key={index}>
+                <TableCell>{doc.name}</TableCell>
+                <TableCell>{doc.type}</TableCell>
+                <TableCell>{new Date(doc.uploadDate).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  <IconButton>
+                    <Download />
+                  </IconButton>
+                  <IconButton color="error" onClick={() => handleDeleteDocument(doc.id)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
+    </Grid>
+  );
+
+  if (!student) {
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
     <Box>
       {/* Action Buttons */}
@@ -326,6 +303,7 @@ const StudentDetailsView = ({ studentId }) => {
           {activeTab === 0 && renderPersonalInfo()}
           {activeTab === 1 && renderAcademics()}
           {activeTab === 2 && renderPlacement()}
+          {activeTab === 3 && renderDocuments()}
           {/* Add more tab content */}
         </CardContent>
       </Card>
@@ -354,4 +332,3 @@ const StudentDetailsView = ({ studentId }) => {
 };
 
 export default StudentDetailsView;
-  

@@ -7,6 +7,7 @@ import {
     Chip,
     Box
   } from '@mui/material';
+import JNFAnalytics from '../../components/admin/jnf/JNFAnalytics';
   
   export const JNFApprovalCard = ({ jnf, onApprove, onReject }) => {
     return (
@@ -46,4 +47,3 @@ import {
       </Card>
     );
   };
-  

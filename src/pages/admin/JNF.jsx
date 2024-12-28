@@ -9,6 +9,30 @@ import { useJNF } from '../../hooks/useJNF';
 import { useModal } from '../../hooks/useModal';
 
 const JNF = () => {
+  // Mock data for development
+  const mockData = [
+    {
+      id: 'JNF001',
+      companyName: 'Tech Corp',
+      jobRole: 'Software Developer',
+      jobType: 'Full Time',
+      package: '12.5',
+      locations: 'Bangalore, Hyderabad',
+      deadline: '2024-03-15',
+      status: 'Open',
+    },
+    {
+      id: 'JNF002',
+      companyName: 'Data Systems',
+      jobRole: 'Data Analyst',
+      jobType: 'Internship',
+      package: '8.0',
+      locations: 'Mumbai',
+      deadline: '2024-03-20',
+      status: 'Open',
+    },
+  ];
+
   const { getJNFs } = useJNF();
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedJNF, setSelectedJNF] = useState(null);
@@ -18,6 +42,7 @@ const JNF = () => {
     status: 'All',
     type: 'All',
   });
+  const [jnfs, setJnfs] = useState(mockData);
 
   const columns = [
     { field: 'id', headerName: 'JNF ID', width: 100 },
@@ -43,32 +68,12 @@ const JNF = () => {
     },
   ];
 
-  // Mock data for development
-  const mockData = [
-    {
-      id: 'JNF001',
-      companyName: 'Tech Corp',
-      jobRole: 'Software Developer',
-      jobType: 'Full Time',
-      package: '12.5',
-      locations: 'Bangalore, Hyderabad',
-      deadline: '2024-03-15',
-      status: 'Open',
-    },
-    {
-      id: 'JNF002',
-      companyName: 'Data Systems',
-      jobRole: 'Data Analyst',
-      jobType: 'Internship',
-      package: '8.0',
-      locations: 'Mumbai',
-      deadline: '2024-03-20',
-      status: 'Open',
-    },
-  ];
-
   const handleFilterChange = (field, value) => {
-    setFilters(prev => ({ ...prev, [field]: value }));
+    if (field === 'reset') {
+      setFilters(value);
+    } else {
+      setFilters(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleEdit = (jnf) => {
@@ -79,6 +84,11 @@ const JNF = () => {
   const handleAdd = () => {
     setSelectedJNF(null);
     openModal();
+  };
+
+  const handleFormSubmit = (newJNF) => {
+    setJnfs(prevJnfs => [...prevJnfs, newJNF]);
+    closeModal();
   };
 
   return (
@@ -103,11 +113,11 @@ const JNF = () => {
 
       <DataTable
         columns={columns}
-        data={mockData}
+        data={jnfs}
         pagination={{
           page: 0,
           rowsPerPage: 10,
-          total: mockData.length,
+          total: jnfs.length,
         }}
       />
 
@@ -115,9 +125,10 @@ const JNF = () => {
         open={isOpen}
         onClose={closeModal}
         jnf={selectedJNF}
+        onSubmit={handleFormSubmit}
       />
     </Box>
   );
 };
 
-export default JNF; 
+export default JNF;

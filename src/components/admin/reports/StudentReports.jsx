@@ -94,6 +94,19 @@ const StudentReports = () => {
     ]
   };
 
+  const [filteredStudentData, setFilteredStudentData] = useState(studentData);
+
+  const applyFilters = () => {
+    const filtered = {
+      ...studentData,
+      studentList: studentData.studentList.filter(student => {
+        // Add your filter logic here
+        return true; // Replace with actual filter conditions
+      })
+    };
+    setFilteredStudentData(filtered);
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'placed':
@@ -159,6 +172,7 @@ const StudentReports = () => {
                 variant="outlined"
                 startIcon={<FilterList />}
                 size="small"
+                onClick={applyFilters}
               >
                 Apply Filters
               </Button>
@@ -178,7 +192,7 @@ const StudentReports = () => {
       {/* Performance Metrics */}
       <Grid item xs={12}>
         <Grid container spacing={2}>
-          {studentData.performanceMetrics.map((metric) => (
+          {filteredStudentData.performanceMetrics.map((metric) => (
             <Grid item xs={12} sm={6} md={3} key={metric.metric}>
               <Card>
                 <CardContent>
@@ -219,7 +233,7 @@ const StudentReports = () => {
             </Typography>
             <Box height={300}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={studentData.branchPerformance}>
+                <BarChart data={filteredStudentData.branchPerformance}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="branch" />
                   <YAxis />
@@ -256,7 +270,7 @@ const StudentReports = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {studentData.studentList.map((student) => (
+                {filteredStudentData.studentList.map((student) => (
                   <TableRow key={student.id}>
                     <TableCell>
                       <Box display="flex" alignItems="center" gap={1}>
@@ -290,4 +304,4 @@ const StudentReports = () => {
   );
 };
 
-export default StudentReports; 
+export default StudentReports;

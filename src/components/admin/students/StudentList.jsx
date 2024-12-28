@@ -43,9 +43,10 @@ import {
   Save,
   MoreVert
 } from '@mui/icons-material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import studentService from '../../../services/studentService';
 
-const StudentList = () => {
+const StudentList = ({ onStudentSelect }) => {
   // State for filters
   const [filters, setFilters] = useState({
     search: '',
@@ -140,6 +141,38 @@ const StudentList = () => {
   const handleSaveFilters = () => {
     // Save current filters as preset
     console.log('Saving filters:', filters);
+  };
+
+  const handleEditStudent = async (student, event) => {
+    event.stopPropagation();
+    // Implement edit student logic
+    console.log('Edit student:', student);
+    // Example: Redirect to edit page or open edit modal
+    alert(`Edit student: ${student.name}`);
+  };
+
+  const handleSendEmail = async (student, event) => {
+    event.stopPropagation();
+    // Implement send email logic
+    console.log('Send email to:', student);
+    // Example: Open email modal or send email directly
+    alert(`Send email to: ${student.name}`);
+  };
+
+  const handleDeleteStudent = async (student, event) => {
+    event.stopPropagation();
+    // Implement delete student logic
+    if (window.confirm(`Are you sure you want to delete ${student.name}?`)) {
+      try {
+        await studentService.deleteStudent(student.id);
+        console.log('Student deleted:', student);
+        alert(`Student deleted: ${student.name}`);
+        // Refresh student list or provide feedback
+      } catch (error) {
+        console.error('Failed to delete student:', error);
+        alert('Failed to delete student');
+      }
+    }
   };
 
   // Filter drawer content
@@ -403,7 +436,7 @@ const StudentList = () => {
               <TableBody>
                 {students.map((student) => (
                   <TableRow key={student.id}>
-                    <TableCell>
+                    <TableCell onClick={() => onStudentSelect(student)}>
                       <Box display="flex" alignItems="center" gap={1}>
                         <Avatar>
                           <Person />
@@ -411,11 +444,11 @@ const StudentList = () => {
                         {student.name}
                       </Box>
                     </TableCell>
-                    <TableCell>{student.rollNo}</TableCell>
-                    <TableCell>{student.batch}</TableCell>
-                    <TableCell>{student.branch}</TableCell>
-                    <TableCell>{student.cgpa}</TableCell>
-                    <TableCell>
+                    <TableCell onClick={() => onStudentSelect(student)}>{student.rollNo}</TableCell>
+                    <TableCell onClick={() => onStudentSelect(student)}>{student.batch}</TableCell>
+                    <TableCell onClick={() => onStudentSelect(student)}>{student.branch}</TableCell>
+                    <TableCell onClick={() => onStudentSelect(student)}>{student.cgpa}</TableCell>
+                    <TableCell onClick={() => onStudentSelect(student)}>
                       <Chip
                         label={student.placementStatus}
                         color={student.placementStatus === 'Placed' ? 'success' : 'default'}
@@ -423,13 +456,13 @@ const StudentList = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <IconButton size="small">
+                      <IconButton size="small" onClick={(event) => handleEditStudent(student, event)}>
                         <Edit />
                       </IconButton>
-                      <IconButton size="small">
+                      <IconButton size="small" onClick={(event) => handleSendEmail(student, event)}>
                         <Mail />
                       </IconButton>
-                      <IconButton size="small" color="error">
+                      <IconButton size="small" color="error" onClick={(event) => handleDeleteStudent(student, event)}>
                         <Delete />
                       </IconButton>
                     </TableCell>
@@ -462,4 +495,4 @@ const StudentList = () => {
   );
 };
 
-export default StudentList; 
+export default StudentList;

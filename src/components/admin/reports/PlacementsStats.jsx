@@ -3,8 +3,10 @@ import {
     CardContent, 
     Typography, 
     Grid, 
-    Box 
+    Box, 
+    Button 
   } from '@mui/material';
+  import { FilterList } from '@mui/icons-material';
   import {
     BarChart,
     Bar,
@@ -14,8 +16,20 @@ import {
     Tooltip,
     Legend
   } from 'recharts';
+  import { useState } from 'react';
   
   export const PlacementStats = ({ data }) => {
+    const [filters, setFilters] = useState({});
+    const [filteredData, setFilteredData] = useState(data);
+
+    const applyFilters = () => {
+      const filtered = data.filter(item => {
+        // Add your filter logic here
+        return true; // Replace with actual filter conditions
+      });
+      setFilteredData(filtered);
+    };
+
     return (
       <Card>
         <CardContent>
@@ -26,7 +40,7 @@ import {
             <BarChart
               width={600}
               height={300}
-              data={data}
+              data={filteredData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -38,6 +52,14 @@ import {
               <Bar dataKey="total" fill="#82ca9d" name="Total Students" />
             </BarChart>
           </Box>
+          <Button
+            variant="outlined"
+            startIcon={<FilterList />}
+            size="small"
+            onClick={applyFilters}
+          >
+            Apply Filters
+          </Button>
         </CardContent>
       </Card>
     );

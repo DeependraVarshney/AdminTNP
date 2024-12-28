@@ -1,3 +1,36 @@
+const placementData = {
+  overview: {
+    totalStudents: 1200,
+    placedStudents: 850,
+    averagePackage: "12.5 LPA",
+    highestPackage: "45 LPA",
+    totalOffers: 920,
+    companiesVisited: 45
+  },
+  monthlyStats: [
+    { month: 'Jul', placed: 50, offers: 55 },
+    { month: 'Aug', placed: 120, offers: 130 },
+    { month: 'Sep', placed: 200, offers: 220 },
+    { month: 'Oct', placed: 350, offers: 380 },
+    { month: 'Nov', placed: 500, offers: 540 },
+    { month: 'Dec', placed: 650, offers: 700 }
+  ],
+  branchWise: [
+    { branch: 'CSE', total: 300, placed: 280 },
+    { branch: 'IT', total: 250, placed: 230 },
+    { branch: 'ECE', total: 200, placed: 170 },
+    { branch: 'EEE', total: 150, placed: 120 },
+    { branch: 'MECH', total: 100, placed: 80 }
+  ],
+  packageDistribution: [
+    { range: '> 20 LPA', count: 75 },
+    { range: '15-20 LPA', count: 150 },
+    { range: '10-15 LPA', count: 300 },
+    { range: '5-10 LPA', count: 250 },
+    { range: '< 5 LPA', count: 75 }
+  ]
+};
+
 import {
   Card,
   CardContent,
@@ -33,38 +66,17 @@ const PlacementReports = () => {
     branch: 'all',
     dateRange: 'year'
   });
+  const [filteredPlacementData, setFilteredPlacementData] = useState(placementData);
 
-  const placementData = {
-    overview: {
-      totalStudents: 1200,
-      placedStudents: 850,
-      averagePackage: "12.5 LPA",
-      highestPackage: "45 LPA",
-      totalOffers: 920,
-      companiesVisited: 45
-    },
-    monthlyStats: [
-      { month: 'Jul', placed: 50, offers: 55 },
-      { month: 'Aug', placed: 120, offers: 130 },
-      { month: 'Sep', placed: 200, offers: 220 },
-      { month: 'Oct', placed: 350, offers: 380 },
-      { month: 'Nov', placed: 500, offers: 540 },
-      { month: 'Dec', placed: 650, offers: 700 }
-    ],
-    branchWise: [
-      { branch: 'CSE', total: 300, placed: 280 },
-      { branch: 'IT', total: 250, placed: 230 },
-      { branch: 'ECE', total: 200, placed: 170 },
-      { branch: 'EEE', total: 150, placed: 120 },
-      { branch: 'MECH', total: 100, placed: 80 }
-    ],
-    packageDistribution: [
-      { range: '> 20 LPA', count: 75 },
-      { range: '15-20 LPA', count: 150 },
-      { range: '10-15 LPA', count: 300 },
-      { range: '5-10 LPA', count: 250 },
-      { range: '< 5 LPA', count: 75 }
-    ]
+  const applyFilters = () => {
+    const filtered = {
+      ...placementData,
+      monthlyStats: placementData.monthlyStats.filter(item => {
+        // Add your filter logic here
+        return true; // Replace with actual filter conditions
+      })
+    };
+    setFilteredPlacementData(filtered);
   };
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
@@ -120,6 +132,7 @@ const PlacementReports = () => {
                 variant="outlined"
                 startIcon={<FilterList />}
                 size="small"
+                onClick={applyFilters}
               >
                 Apply Filters
               </Button>
@@ -165,7 +178,7 @@ const PlacementReports = () => {
             </Typography>
             <Box height={300}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={placementData.monthlyStats}>
+                <BarChart data={filteredPlacementData.monthlyStats}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
@@ -240,5 +253,4 @@ const PlacementReports = () => {
 };
 
 export default PlacementReports;
-  
- 
+

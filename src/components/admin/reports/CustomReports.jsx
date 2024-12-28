@@ -18,7 +18,8 @@ import {
   Add,
   Download,
   Save,
-  Delete
+  Delete,
+  FilterList
 } from '@mui/icons-material';
 import { useState } from 'react';
 
@@ -83,6 +84,11 @@ const CustomReports = () => {
   const handleGenerateReport = () => {
     console.log('Generating report with config:', reportConfig);
     // Handle report generation
+  };
+
+  const applyFilters = () => {
+    // Add your filter logic here
+    console.log('Filters applied:', reportConfig.filters);
   };
 
   return (
@@ -243,6 +249,14 @@ const CustomReports = () => {
                   >
                     Generate Report
                   </Button>
+                  <Button
+                    variant="outlined"
+                    startIcon={<FilterList />}
+                    size="small"
+                    onClick={applyFilters}
+                  >
+                    Apply Filters
+                  </Button>
                 </Box>
               </Grid>
             </Grid>
@@ -317,4 +331,4 @@ const CustomReports = () => {
   );
 };
 
-export default CustomReports; 
+export default CustomReports;

@@ -14,11 +14,15 @@ import {
   Autocomplete,
   Stepper,
   Step,
-  StepLabel
+  StepLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const JNFForm = () => {
+const JNFForm = ({ open, onClose, jnf, onSubmit }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     // Company Details
@@ -47,6 +51,40 @@ const JNFForm = () => {
     documents: [],
     additionalNotes: ''
   });
+
+  useEffect(() => {
+    if (jnf) {
+      setFormData(jnf);
+    } else {
+      setFormData({
+        // Company Details
+        companyName: '',
+        website: '',
+        industry: '',
+        aboutCompany: '',
+
+        // Job Details
+        jobTitle: '',
+        jobDescription: '',
+        jobType: '',
+        workLocation: '',
+        positions: '',
+        ctc: '',
+        bondDetails: '',
+
+        // Eligibility Criteria
+        eligibleBranches: [],
+        minimumCGPA: '',
+        backlogPolicy: '',
+        selectionProcess: [],
+
+        // Additional Details
+        skillsRequired: [],
+        documents: [],
+        additionalNotes: ''
+      });
+    }
+  }, [jnf]);
 
   const steps = [
     'Company Details',
@@ -79,9 +117,17 @@ const JNFForm = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
 
+  const handleChange = (field) => (event) => {
+    const value = event.target.value;
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
   const handleSubmit = () => {
     console.log('Form Data:', formData);
-    // Handle form submission
+    onSubmit(formData);
   };
 
   const CompanyDetailsForm = () => (
@@ -91,7 +137,7 @@ const JNFForm = () => {
           fullWidth
           label="Company Name"
           value={formData.companyName}
-          onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+          onChange={handleChange('companyName')}
           required
         />
       </Grid>
@@ -100,7 +146,7 @@ const JNFForm = () => {
           fullWidth
           label="Website"
           value={formData.website}
-          onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+          onChange={handleChange('website')}
         />
       </Grid>
       <Grid item xs={12} md={6}>
@@ -108,7 +154,7 @@ const JNFForm = () => {
           fullWidth
           label="Industry"
           value={formData.industry}
-          onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+          onChange={handleChange('industry')}
           required
         />
       </Grid>
@@ -119,7 +165,7 @@ const JNFForm = () => {
           rows={4}
           label="About Company"
           value={formData.aboutCompany}
-          onChange={(e) => setFormData({ ...formData, aboutCompany: e.target.value })}
+          onChange={handleChange('aboutCompany')}
         />
       </Grid>
     </Grid>
@@ -132,7 +178,7 @@ const JNFForm = () => {
           fullWidth
           label="Job Title"
           value={formData.jobTitle}
-          onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
+          onChange={handleChange('jobTitle')}
           required
         />
       </Grid>
@@ -142,7 +188,7 @@ const JNFForm = () => {
           <Select
             value={formData.jobType}
             label="Job Type"
-            onChange={(e) => setFormData({ ...formData, jobType: e.target.value })}
+            onChange={handleChange('jobType')}
           >
             <MenuItem value="full-time">Full Time</MenuItem>
             <MenuItem value="internship">Internship</MenuItem>
@@ -157,7 +203,7 @@ const JNFForm = () => {
           rows={4}
           label="Job Description"
           value={formData.jobDescription}
-          onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
+          onChange={handleChange('jobDescription')}
           required
         />
       </Grid>
@@ -166,7 +212,7 @@ const JNFForm = () => {
           fullWidth
           label="Work Location"
           value={formData.workLocation}
-          onChange={(e) => setFormData({ ...formData, workLocation: e.target.value })}
+          onChange={handleChange('workLocation')}
           required
         />
       </Grid>
@@ -176,7 +222,7 @@ const JNFForm = () => {
           label="Number of Positions"
           type="number"
           value={formData.positions}
-          onChange={(e) => setFormData({ ...formData, positions: e.target.value })}
+          onChange={handleChange('positions')}
           required
         />
       </Grid>
@@ -185,7 +231,7 @@ const JNFForm = () => {
           fullWidth
           label="CTC (per annum)"
           value={formData.ctc}
-          onChange={(e) => setFormData({ ...formData, ctc: e.target.value })}
+          onChange={handleChange('ctc')}
           required
         />
       </Grid>
@@ -194,7 +240,7 @@ const JNFForm = () => {
           fullWidth
           label="Bond Details (if any)"
           value={formData.bondDetails}
-          onChange={(e) => setFormData({ ...formData, bondDetails: e.target.value })}
+          onChange={handleChange('bondDetails')}
         />
       </Grid>
     </Grid>
@@ -227,7 +273,7 @@ const JNFForm = () => {
           type="number"
           inputProps={{ step: 0.01, min: 0, max: 10 }}
           value={formData.minimumCGPA}
-          onChange={(e) => setFormData({ ...formData, minimumCGPA: e.target.value })}
+          onChange={handleChange('minimumCGPA')}
           required
         />
       </Grid>
@@ -236,7 +282,7 @@ const JNFForm = () => {
           fullWidth
           label="Backlog Policy"
           value={formData.backlogPolicy}
-          onChange={(e) => setFormData({ ...formData, backlogPolicy: e.target.value })}
+          onChange={handleChange('backlogPolicy')}
         />
       </Grid>
       <Grid item xs={12}>
@@ -293,7 +339,7 @@ const JNFForm = () => {
           rows={4}
           label="Additional Notes"
           value={formData.additionalNotes}
-          onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
+          onChange={handleChange('additionalNotes')}
         />
       </Grid>
     </Grid>
@@ -315,8 +361,9 @@ const JNFForm = () => {
   };
 
   return (
-    <Card>
-      <CardContent>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle>{jnf ? 'Edit JNF' : 'Create JNF'}</DialogTitle>
+      <DialogContent>
         <Typography variant="h6" gutterBottom>
           Create Job Notification Form
         </Typography>
@@ -357,9 +404,15 @@ const JNFForm = () => {
             </Button>
           )}
         </Box>
-      </CardContent>
-    </Card>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button variant="contained" onClick={handleSubmit}>
+          {jnf ? 'Update' : 'Create'}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
-export default JNFForm; 
+export default JNFForm;
