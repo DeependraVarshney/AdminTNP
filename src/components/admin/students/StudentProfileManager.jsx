@@ -335,5 +335,4 @@ const StudentProfileManager = ({ student, onSave, onCancel }) => {
 };
 
 export default StudentProfileManager;
-  
- 
+

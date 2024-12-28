@@ -19,7 +19,8 @@ import {
     PieChart,
     BarChart,
     Download,
-    Add
+    Add,
+    FilterList
   } from '@mui/icons-material';
   import { useState } from 'react';
   
@@ -40,6 +41,11 @@ import {
       'Company Count',
       'Branch-wise Statistics'
     ];
+  
+    const applyFilters = () => {
+      // Add your filter logic here
+      console.log('Filters applied:', reportConfig.filters);
+    };
   
     return (
       <Card>
@@ -123,6 +129,14 @@ import {
               <Box display="flex" gap={2} justifyContent="flex-end">
                 <Button
                   variant="outlined"
+                  startIcon={<FilterList />}
+                  size="small"
+                  onClick={applyFilters}
+                >
+                  Apply Filters
+                </Button>
+                <Button
+                  variant="outlined"
                   startIcon={<Add />}
                   onClick={() => setReportConfig({ ...reportConfig })}
                 >
@@ -142,4 +156,3 @@ import {
       </Card>
     );
   };
-  

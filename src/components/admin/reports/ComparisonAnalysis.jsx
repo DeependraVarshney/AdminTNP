@@ -5,14 +5,19 @@ import {
     Grid,
     Paper,
     Box,
-    Chip
+    Chip,
+    Button
   } from '@mui/material';
   import {
     ArrowUpward,
-    ArrowDownward
+    ArrowDownward,
+    FilterList
   } from '@mui/icons-material';
+  import { useState } from 'react';
   
   export const ComparisonAnalysis = ({ data }) => {
+    const [filters, setFilters] = useState({});
+
     const getPercentageChange = (current, previous) => {
       const change = ((current - previous) / previous) * 100;
       return change.toFixed(1);
@@ -20,6 +25,11 @@ import {
   
     const getChangeColor = (change) => {
       return change > 0 ? 'success' : 'error';
+    };
+
+    const applyFilters = () => {
+      // Add your filter logic here
+      console.log('Filters applied:', filters);
     };
   
     return (
@@ -71,6 +81,15 @@ import {
               ))}
             </Grid>
           </Box>
+
+          <Button
+            variant="outlined"
+            startIcon={<FilterList />}
+            size="small"
+            onClick={applyFilters}
+          >
+            Apply Filters
+          </Button>
         </CardContent>
       </Card>
     );

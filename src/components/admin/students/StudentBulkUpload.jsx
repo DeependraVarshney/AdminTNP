@@ -25,6 +25,8 @@ import {
   Refresh
 } from '@mui/icons-material';
 import { useState } from 'react';
+import studentService from '../../../services/studentService';
+import { API_BASE_URL } from '../../../config/constants';
 
 const StudentBulkUpload = () => {
   const [uploading, setUploading] = useState(false);
@@ -43,31 +45,25 @@ const StudentBulkUpload = () => {
     setUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setUploading(false);
-          // Simulate upload results
-          setUploadResults({
-            total: 100,
-            successful: 95,
-            failed: 5,
-            errors: [
-              {
-                row: 15,
-                error: 'Invalid email format',
-                data: 'john.doe@invalid'
-              },
-              // Add more errors...
-            ]
-          });
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 500);
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    studentService.bulkImport(formData).then(response => {
+      setUploading(false);
+      setUploadResults(response);
+    }).catch(error => {
+      setUploading(false);
+      console.error('Upload failed:', error);
+    });
+  };
+
+  const handleDownloadTemplate = () => {
+    const link = document.createElement('a');
+    link.href = `${API_BASE_URL}/students/template`;
+    link.setAttribute('download', 'student_template.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -87,6 +83,7 @@ const StudentBulkUpload = () => {
                 variant="outlined"
                 startIcon={<Download />}
                 sx={{ mr: 2 }}
+                onClick={handleDownloadTemplate}
               >
                 Download Template
               </Button>
@@ -226,4 +223,3 @@ const StudentBulkUpload = () => {
 };
 
 export default StudentBulkUpload;
-  

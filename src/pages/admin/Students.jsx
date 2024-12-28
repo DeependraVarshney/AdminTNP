@@ -22,15 +22,17 @@ const Students = () => {
     setSelectedStudent(student);
     setActiveTab(-1); // Custom value for details view
   };
-
+  
   const handleEditProfile = () => {
     setIsEditing(true);
   };
 
   const handleSaveProfile = (updatedData) => {
     // Handle save logic
-    console.log('Saving profile:', updatedData);
-    setIsEditing(false);
+    studentService.updateStudent(selectedStudent.id, updatedData).then(() => {
+      console.log('Profile updated:', updatedData);
+      setIsEditing(false);
+    });
   };
 
   const handleCancelEdit = () => {
@@ -77,4 +79,4 @@ const Students = () => {
   );
 };
 
-export default Students; 
+export default Students;

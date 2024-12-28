@@ -17,7 +17,7 @@ import {
     { id: 'placementStatus', label: 'Status' },
   ];
   
-  export const StudentList = ({ students, onSearch }) => {
+  export const StudentList = ({ students, onSearch, onStudentSelect }) => {
     return (
       <Card>
         <CardContent>
@@ -41,6 +41,7 @@ import {
           <DataTable 
             columns={columns}
             data={students}
+            onRowClick={(row) => onStudentSelect(row)}
           />
         </CardContent>
       </Card>
