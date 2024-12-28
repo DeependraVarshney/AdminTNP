@@ -5,6 +5,7 @@ import MainLayout from '../components/layout/MainLayout';
 import AuthLayout from '../components/layout/AuthLayout';
 import routes from '../config/routes';
 import Error404 from '../pages/Error404';
+import Settings from '../pages/admin/Settings';
 
 const Loading = () => (
   <Box
@@ -47,6 +48,7 @@ const AppRoutes = () => {
                 element={<route.element />}
               />
             ))}
+          <Route path="settings" element={<Settings />} />
         </Route>
 
         {/* Root Redirect */}
@@ -59,4 +61,4 @@ const AppRoutes = () => {
   );
 };
 
-export default AppRoutes; 
+export default AppRoutes;

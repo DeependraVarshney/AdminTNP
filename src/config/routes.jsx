@@ -9,6 +9,7 @@ const Placements = lazy(() => import('../pages/admin/Placements'));
 const Templates = lazy(() => import('../pages/admin/Templates'));
 const Reports = lazy(() => import('../pages/admin/Reports'));
 const Profile = lazy(() => import('../pages/admin/Profile'));
+const Settings = lazy(() => import('../pages/admin/Settings'));
 
 // Auth Pages
 const Login = lazy(() => import('../pages/auth/Login'));
@@ -54,6 +55,10 @@ const routes = [
         path: 'profile',
         element: Profile,
       },
+      {
+        path: 'settings',
+        element: Settings,
+      },
     ],
   },
   {
@@ -79,4 +84,4 @@ const routes = [
   },
 ];
 
-export default routes; 
+export default routes;
