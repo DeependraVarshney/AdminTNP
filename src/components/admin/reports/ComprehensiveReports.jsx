@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, CardContent, Button } from '@mui/material';
-import { FilterList } from '@mui/icons-material';
+import FilterList from '@mui/icons-material/FilterList';
 
 // components/admin/reports/ComprehensiveReports.jsx
 export const ComprehensiveReports = () => {
