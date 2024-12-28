@@ -6,11 +6,13 @@ import Sidebar from './Sidebar';
 import Footer from './Footer';
 import Breadcrumbs from './Breadcrumbs';
 import { useLayout } from '../../hooks/useLayout';
+import { useLayoutContext } from '../../contexts/LayoutContext';
 
 const MainLayout = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { isSidebarOpen, toggleSidebar } = useLayout();
+    const { isSidebarOpen: contextIsSidebarOpen } = useLayoutContext();
 
     // Mobile sidebar component
     const MobileSidebar = () => (
@@ -55,8 +57,8 @@ const MainLayout = () => {
         <Box 
             sx={{
                 display: 'flex',
-                minHeight: '100vh',
-                bgcolor: theme.palette.mode === 'dark' ? '#121212' : '#f5f5f5',
+                height: '100vh',
+                overflow: 'hidden'
             }}
         >
             {/* Render both sidebars - they'll be conditionally displayed via CSS */}
@@ -68,37 +70,29 @@ const MainLayout = () => {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    minHeight: '100vh',
                     display: 'flex',
-                    bgcolor: theme.palette.mode === 'dark' ? '#121212' : '#f5f5f5',
                     flexDirection: 'column',
+                    height: '100vh',
                     overflow: 'hidden',
-                    pl: {
-                        xs: 0, // No padding on mobile
-                        md: isSidebarOpen ? '240px' : '64px', // Desktop padding
-                    },
-                    transition: theme.transitions.create('padding', {
-                        easing: theme.transitions.easing.sharp,
-                        duration: theme.transitions.duration.enteringScreen,
-                    }),
+                    transition: 'margin-left 0.3s ease',
+                    marginLeft: { xs: 0, md: isSidebarOpen ? '240px' : '64px' },
                 }}
             >
-                {/* Header - Responsive */}
                 <Header 
                     onToggleSidebar={toggleSidebar}
                     isMobile={isMobile}
                 />
 
-                {/* Main Content Area - Responsive */}
-                <Box sx={{ 
-                    py: { xs: 2, sm: 3 }, 
-                    px: { xs: 2, sm: 3, md: 4 }, 
-                    flex: 1 
-                }}>
-                    {/* Breadcrumbs */}
+                <Box
+                    sx={{
+                        p: 3,
+                        flexGrow: 1,
+                        overflow: 'auto',
+                        height: 'calc(100vh - 64px)',
+                    }}
+                >
                     <Breadcrumbs sx={{ mb: { xs: 2, sm: 3 } }} />
 
-                    {/* Page Content */}
                     <Container 
                         maxWidth="xl" 
                         disableGutters
@@ -119,7 +113,6 @@ const MainLayout = () => {
                     </Container>
                 </Box>
 
-                {/* Footer - Responsive */}
                 <Footer sx={{ 
                     py: { xs: 2, sm: 3 },
                     px: { xs: 2, sm: 3, md: 4 } 

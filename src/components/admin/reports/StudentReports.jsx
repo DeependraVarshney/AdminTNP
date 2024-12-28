@@ -1,30 +1,25 @@
+import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import {
-  Card,
-  CardContent,
+  Grid,
+  Paper,
   Typography,
   Box,
-  Grid,
+  TextField,
+  MenuItem,
+  Button,
+  CircularProgress,
+  Card,
+  CardContent,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Chip,
-  Avatar
 } from '@mui/material';
-import {
-  Download,
-  FilterList,
-  Person,
-  TrendingUp,
-  TrendingDown
-} from '@mui/icons-material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Download, FilterList } from '@mui/icons-material';
 import {
   BarChart,
   Bar,
@@ -33,273 +28,228 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts';
-import { useState } from 'react';
+import reportService from '../../../services/reportService';
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const StudentReports = () => {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
   const [filters, setFilters] = useState({
-    year: '2024',
-    branch: 'all',
-    status: 'all'
+    department: 'all',
+    batch: new Date().getFullYear().toString(),
+    category: 'all',
+    placementStatus: 'all',
+    startDate: dayjs(),
+    endDate: dayjs(),
   });
 
-  const studentData = {
-    performanceMetrics: [
-      {
-        metric: 'Average Test Score',
-        value: '75%',
-        trend: 'up',
-        change: '+5%'
-      },
-      {
-        metric: 'Interview Success Rate',
-        value: '65%',
-        trend: 'up',
-        change: '+8%'
-      },
-      {
-        metric: 'Multiple Offer Rate',
-        value: '30%',
-        trend: 'down',
-        change: '-2%'
-      },
-      {
-        metric: 'Average Package',
-        value: '12.5 LPA',
-        trend: 'up',
-        change: '+1.5 LPA'
-      }
-    ],
-    branchPerformance: [
-      { branch: 'CSE', placed: 280, unplaced: 20, avgPackage: 15 },
-      { branch: 'IT', placed: 230, unplaced: 20, avgPackage: 14 },
-      { branch: 'ECE', placed: 170, unplaced: 30, avgPackage: 12 },
-      { branch: 'EEE', placed: 120, unplaced: 30, avgPackage: 11 },
-      { branch: 'MECH', placed: 80, unplaced: 20, avgPackage: 10 }
-    ],
-    studentList: [
-      {
-        id: 1,
-        name: 'John Doe',
-        branch: 'CSE',
-        cgpa: 8.5,
-        testsAttended: 5,
-        interviewsAttended: 3,
-        offers: 2,
-        highestPackage: '25 LPA',
-        status: 'placed'
-      },
-      // Add more students...
-    ]
-  };
-
-  const [filteredStudentData, setFilteredStudentData] = useState(studentData);
-
-  const applyFilters = () => {
-    const filtered = {
-      ...studentData,
-      studentList: studentData.studentList.filter(student => {
-        // Add your filter logic here
-        return true; // Replace with actual filter conditions
-      })
-    };
-    setFilteredStudentData(filtered);
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'placed':
-        return 'success';
-      case 'unplaced':
-        return 'error';
-      case 'in_process':
-        return 'warning';
-      default:
-        return 'default';
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await reportService.getFilteredReports('student', filters);
+      setData(response);
+    } catch (error) {
+      console.error('Error fetching student data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilters(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleDateChange = (name) => (date) => {
+    setFilters(prev => ({
+      ...prev,
+      [name]: date,
+    }));
+  };
+
+  const handleApplyFilters = () => {
+    fetchData();
+  };
+
+  const handleDownload = async () => {
+    try {
+      setLoading(true);
+      await reportService.downloadReport('student', filters);
+    } catch (error) {
+      console.error('Error downloading report:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Grid container spacing={3}>
-      {/* Filters */}
+      {/* Filters Section */}
       <Grid item xs={12}>
-        <Card>
-          <CardContent>
-            <Box display="flex" gap={2} alignItems="center">
-              <FormControl size="small" sx={{ minWidth: 120 }}>
-                <InputLabel>Year</InputLabel>
-                <Select
-                  value={filters.year}
-                  label="Year"
-                  onChange={(e) => setFilters({ ...filters, year: e.target.value })}
-                >
-                  <MenuItem value="2024">2024</MenuItem>
-                  <MenuItem value="2023">2023</MenuItem>
-                  <MenuItem value="2022">2022</MenuItem>
-                </Select>
-              </FormControl>
-
-              <FormControl size="small" sx={{ minWidth: 120 }}>
-                <InputLabel>Branch</InputLabel>
-                <Select
-                  value={filters.branch}
-                  label="Branch"
-                  onChange={(e) => setFilters({ ...filters, branch: e.target.value })}
-                >
-                  <MenuItem value="all">All Branches</MenuItem>
-                  <MenuItem value="cse">CSE</MenuItem>
-                  <MenuItem value="it">IT</MenuItem>
-                  <MenuItem value="ece">ECE</MenuItem>
-                </Select>
-              </FormControl>
-
-              <FormControl size="small" sx={{ minWidth: 120 }}>
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={filters.status}
-                  label="Status"
-                  onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                >
-                  <MenuItem value="all">All Status</MenuItem>
-                  <MenuItem value="placed">Placed</MenuItem>
-                  <MenuItem value="unplaced">Unplaced</MenuItem>
-                  <MenuItem value="in_process">In Process</MenuItem>
-                </Select>
-              </FormControl>
-
-              <Button
-                variant="outlined"
-                startIcon={<FilterList />}
-                size="small"
-                onClick={applyFilters}
+        <Paper sx={{ p: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Filters
+          </Typography>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                fullWidth
+                select
+                name="department"
+                label="Department"
+                value={filters.department}
+                onChange={handleFilterChange}
               >
-                Apply Filters
-              </Button>
-
-              <Button
-                variant="contained"
-                startIcon={<Download />}
-                size="small"
-              >
-                Download Report
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
-
-      {/* Performance Metrics */}
-      <Grid item xs={12}>
-        <Grid container spacing={2}>
-          {filteredStudentData.performanceMetrics.map((metric) => (
-            <Grid item xs={12} sm={6} md={3} key={metric.metric}>
-              <Card>
-                <CardContent>
-                  <Typography variant="body2" color="textSecondary" gutterBottom>
-                    {metric.metric}
-                  </Typography>
-                  <Box display="flex" alignItems="center" justifyContent="space-between">
-                    <Typography variant="h6">
-                      {metric.value}
-                    </Typography>
-                    <Box display="flex" alignItems="center" gap={0.5}>
-                      {metric.trend === 'up' ? (
-                        <TrendingUp color="success" />
-                      ) : (
-                        <TrendingDown color="error" />
-                      )}
-                      <Typography
-                        variant="body2"
-                        color={metric.trend === 'up' ? 'success.main' : 'error.main'}
-                      >
-                        {metric.change}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
+                <MenuItem value="all">All Departments</MenuItem>
+                <MenuItem value="CSE">Computer Science</MenuItem>
+                <MenuItem value="IT">Information Technology</MenuItem>
+                <MenuItem value="ECE">Electronics</MenuItem>
+                <MenuItem value="ME">Mechanical</MenuItem>
+              </TextField>
             </Grid>
-          ))}
-        </Grid>
-      </Grid>
-
-      {/* Branch Performance Chart */}
-      <Grid item xs={12}>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Branch-wise Performance
-            </Typography>
-            <Box height={300}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={filteredStudentData.branchPerformance}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="branch" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="placed" name="Placed Students" fill="#2e7d32" />
-                  <Bar dataKey="unplaced" name="Unplaced Students" fill="#d32f2f" />
-                  <Bar dataKey="avgPackage" name="Avg. Package (LPA)" fill="#1976d2" />
-                </BarChart>
-              </ResponsiveContainer>
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
-
-      {/* Student List */}
-      <Grid item xs={12}>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Student Details
-            </Typography>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Student</TableCell>
-                  <TableCell>Branch</TableCell>
-                  <TableCell>CGPA</TableCell>
-                  <TableCell>Tests</TableCell>
-                  <TableCell>Interviews</TableCell>
-                  <TableCell>Offers</TableCell>
-                  <TableCell>Highest Package</TableCell>
-                  <TableCell>Status</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredStudentData.studentList.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell>
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <Avatar>
-                          <Person />
-                        </Avatar>
-                        {student.name}
-                      </Box>
-                    </TableCell>
-                    <TableCell>{student.branch}</TableCell>
-                    <TableCell>{student.cgpa}</TableCell>
-                    <TableCell>{student.testsAttended}</TableCell>
-                    <TableCell>{student.interviewsAttended}</TableCell>
-                    <TableCell>{student.offers}</TableCell>
-                    <TableCell>{student.highestPackage}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={student.status}
-                        color={getStatusColor(student.status)}
-                        size="small"
-                      />
-                    </TableCell>
-                  </TableRow>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                fullWidth
+                select
+                name="batch"
+                label="Batch"
+                value={filters.batch}
+                onChange={handleFilterChange}
+              >
+                {[2022, 2023, 2024].map((year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
                 ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                fullWidth
+                select
+                name="category"
+                label="Category"
+                value={filters.category}
+                onChange={handleFilterChange}
+              >
+                <MenuItem value="all">All Categories</MenuItem>
+                <MenuItem value="General">General</MenuItem>
+                <MenuItem value="OBC">OBC</MenuItem>
+                <MenuItem value="SC">SC</MenuItem>
+                <MenuItem value="ST">ST</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <TextField
+                fullWidth
+                select
+                name="placementStatus"
+                label="Placement Status"
+                value={filters.placementStatus}
+                onChange={handleFilterChange}
+              >
+                <MenuItem value="all">All Students</MenuItem>
+                <MenuItem value="placed">Placed</MenuItem>
+                <MenuItem value="not_placed">Not Placed</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={12} container justifyContent="flex-end" spacing={1}>
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  startIcon={<FilterList />}
+                  onClick={handleApplyFilters}
+                >
+                  Apply Filters
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  startIcon={<Download />}
+                  onClick={handleDownload}
+                >
+                  Download Report
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Paper>
       </Grid>
+
+      {/* Department-wise Statistics */}
+      {data && (
+        <>
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Department-wise Statistics
+              </Typography>
+              <BarChart
+                width={500}
+                height={300}
+                data={data.departmentWise}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="department" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="placed" fill="#8884d8" name="Placed" />
+                <Bar dataKey="total" fill="#82ca9d" name="Total" />
+              </BarChart>
+            </Paper>
+          </Grid>
+
+          {/* Category-wise Statistics */}
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Category-wise Statistics
+              </Typography>
+              <PieChart width={500} height={300}>
+                <Pie
+                  data={data.categoryWise}
+                  dataKey="placed"
+                  nameKey="category"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#8884d8"
+                  label
+                >
+                  {data.categoryWise.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </Paper>
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 };

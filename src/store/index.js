@@ -25,7 +25,6 @@ export const store = configureStore({
     }),
 });
 
-/** @type {ReturnType<typeof store.getState>} */
-export const RootState = null;
-/** @type {typeof store.dispatch} */
-export const AppDispatch = null; 
+// Export the state and dispatch functions directly
+export const getState = store.getState;
+export const dispatch = store.dispatch; 

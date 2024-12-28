@@ -1,292 +1,215 @@
+import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import {
-  Card,
-  CardContent,
+  Grid,
+  Paper,
   Typography,
   Box,
-  Grid,
+  TextField,
+  MenuItem,
   Button,
+  CircularProgress,
+  Chip,
   FormControl,
   InputLabel,
   Select,
-  MenuItem,
-  TextField,
-  Chip,
-  Autocomplete,
-  Divider
+  Checkbox,
+  ListItemText,
+  OutlinedInput,
+  Card,
+  CardContent,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import {
-  Add,
-  Download,
-  Save,
-  Delete,
-  FilterList
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Save as SaveIcon,
+  Download as DownloadIcon,
 } from '@mui/icons-material';
-import { useState } from 'react';
+import reportService from '../../../services/reportService';
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const availableMetrics = [
+  'Total Students',
+  'Placed Students',
+  'Average Package',
+  'Highest Package',
+  'Department-wise Stats',
+  'Company-wise Stats',
+  'Placement Timeline',
+  'Package Distribution',
+];
 
 const CustomReports = () => {
-  const [reportConfig, setReportConfig] = useState({
+  const [loading, setLoading] = useState(false);
+  const [templates, setTemplates] = useState([]);
+  const [error, setError] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [newTemplate, setNewTemplate] = useState({
     name: '',
-    type: '',
+    type: 'placement',
     metrics: [],
-    filters: [],
-    groupBy: '',
-    sortBy: '',
-    dateRange: {
-      start: '',
-      end: ''
-    }
+    filters: {
+      startDate: dayjs(),
+      endDate: dayjs(),
+      departments: [],
+      categories: [],
+    },
   });
 
-  const availableMetrics = [
-    'Placement Rate',
-    'Average Package',
-    'Highest Package',
-    'Company Count',
-    'Offers per Student',
-    'Branch Performance',
-    'Interview Success Rate',
-    'Test Performance'
-  ];
+  // Fetch saved templates
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      try {
+        setLoading(true);
+        const response = await reportService.getReportTemplates();
+        setTemplates(response || []);
+      } catch (error) {
+        console.error('Error fetching templates:', error);
+        setError('Failed to load templates');
+        setTemplates([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTemplates();
+  }, []);
 
-  const filterOptions = [
-    'Branch',
-    'Year',
-    'Company',
-    'Package Range',
-    'Status',
-    'CGPA Range'
-  ];
-
-  const groupByOptions = [
-    'Branch',
-    'Company',
-    'Month',
-    'Package Range',
-    'Status'
-  ];
-
-  const savedReports = [
-    {
-      id: 1,
-      name: 'Branch-wise Placement Analysis',
-      type: 'Placement',
-      metrics: ['Placement Rate', 'Average Package'],
-      lastRun: '2024-03-15'
-    },
-    // Add more saved reports...
-  ];
-
-  const handleSaveReport = () => {
-    console.log('Saving report configuration:', reportConfig);
-    // Handle save logic
+  const handleTemplateChange = (event) => {
+    const { name, value } = event.target;
+    setNewTemplate((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleGenerateReport = () => {
-    console.log('Generating report with config:', reportConfig);
-    // Handle report generation
+  const handleMetricsChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setNewTemplate((prev) => ({
+      ...prev,
+      metrics: typeof value === 'string' ? value.split(',') : value,
+    }));
   };
 
-  const applyFilters = () => {
-    // Add your filter logic here
-    console.log('Filters applied:', reportConfig.filters);
+  const handleSaveTemplate = async () => {
+    try {
+      setLoading(true);
+      const savedTemplate = await reportService.saveReportTemplate(newTemplate);
+      setTemplates((prev) => [...prev, savedTemplate]);
+      setOpenDialog(false);
+      setNewTemplate({
+        name: '',
+        type: 'placement',
+        metrics: [],
+        filters: {
+          startDate: dayjs(),
+          endDate: dayjs(),
+          departments: [],
+          categories: [],
+        },
+      });
+    } catch (error) {
+      console.error('Error saving template:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGenerateReport = async (template) => {
+    try {
+      setLoading(true);
+      await reportService.generateReport(template);
+    } catch (error) {
+      console.error('Error generating report:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteTemplate = async (templateId) => {
+    try {
+      setLoading(true);
+      await reportService.deleteReportTemplate(templateId);
+      setTemplates((prev) => prev.filter((t) => t.id !== templateId));
+    } catch (error) {
+      console.error('Error deleting template:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Grid container spacing={3}>
-      {/* Report Configuration */}
-      <Grid item xs={12} md={8}>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Create Custom Report
-            </Typography>
-
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Report Name"
-                  value={reportConfig.name}
-                  onChange={(e) => setReportConfig({ ...reportConfig, name: e.target.value })}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Report Type</InputLabel>
-                  <Select
-                    value={reportConfig.type}
-                    label="Report Type"
-                    onChange={(e) => setReportConfig({ ...reportConfig, type: e.target.value })}
-                  >
-                    <MenuItem value="placement">Placement Report</MenuItem>
-                    <MenuItem value="company">Company Report</MenuItem>
-                    <MenuItem value="student">Student Report</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Autocomplete
-                  multiple
-                  options={availableMetrics}
-                  value={reportConfig.metrics}
-                  onChange={(event, newValue) => {
-                    setReportConfig({ ...reportConfig, metrics: newValue });
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Select Metrics" />
-                  )}
-                  renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                      <Chip
-                        label={option}
-                        {...getTagProps({ index })}
-                        color="primary"
-                      />
-                    ))
-                  }
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Autocomplete
-                  multiple
-                  options={filterOptions}
-                  value={reportConfig.filters}
-                  onChange={(event, newValue) => {
-                    setReportConfig({ ...reportConfig, filters: newValue });
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Add Filters" />
-                  )}
-                  renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                      <Chip
-                        label={option}
-                        {...getTagProps({ index })}
-                      />
-                    ))
-                  }
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Group By</InputLabel>
-                  <Select
-                    value={reportConfig.groupBy}
-                    label="Group By"
-                    onChange={(e) => setReportConfig({ ...reportConfig, groupBy: e.target.value })}
-                  >
-                    {groupByOptions.map((option) => (
-                      <MenuItem key={option} value={option.toLowerCase()}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Sort By</InputLabel>
-                  <Select
-                    value={reportConfig.sortBy}
-                    label="Sort By"
-                    onChange={(e) => setReportConfig({ ...reportConfig, sortBy: e.target.value })}
-                  >
-                    {reportConfig.metrics.map((metric) => (
-                      <MenuItem key={metric} value={metric.toLowerCase()}>
-                        {metric}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label="Start Date"
-                  value={reportConfig.dateRange.start}
-                  onChange={(e) => setReportConfig({
-                    ...reportConfig,
-                    dateRange: { ...reportConfig.dateRange, start: e.target.value }
-                  })}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label="End Date"
-                  value={reportConfig.dateRange.end}
-                  onChange={(e) => setReportConfig({
-                    ...reportConfig,
-                    dateRange: { ...reportConfig.dateRange, end: e.target.value }
-                  })}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box display="flex" gap={2}>
-                  <Button
-                    variant="contained"
-                    startIcon={<Save />}
-                    onClick={handleSaveReport}
-                  >
-                    Save Configuration
-                  </Button>
-                  <Button
-                    variant="contained"
-                    startIcon={<Download />}
-                    onClick={handleGenerateReport}
-                  >
-                    Generate Report
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<FilterList />}
-                    size="small"
-                    onClick={applyFilters}
-                  >
-                    Apply Filters
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+      {/* Header with Add Template Button */}
+      <Grid item xs={12}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6">Custom Report Templates</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setOpenDialog(true)}
+          >
+            Create New Template
+          </Button>
+        </Box>
       </Grid>
 
-      {/* Saved Reports */}
-      <Grid item xs={12} md={4}>
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Saved Reports
-            </Typography>
+      {/* Error Message */}
+      {error && (
+        <Grid item xs={12}>
+          <Typography color="error">{error}</Typography>
+        </Grid>
+      )}
 
-            {savedReports.map((report) => (
-              <Box key={report.id} mb={2}>
-                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                  <Box>
-                    <Typography variant="subtitle1">
-                      {report.name}
+      {/* Loading State */}
+      {loading && (
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="center" p={3}>
+            <CircularProgress />
+          </Box>
+        </Grid>
+      )}
+
+      {/* Saved Templates */}
+      <Grid item xs={12}>
+        <Grid container spacing={2}>
+          {templates && templates.length > 0 ? (
+            templates.map((template) => (
+              <Grid item xs={12} md={6} lg={4} key={template.id}>
+                <Card>
+                  <CardContent>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Typography variant="h6">{template.name}</Typography>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDeleteTemplate(template.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                    <Typography color="textSecondary" gutterBottom>
+                      Type: {template.type}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Type: {report.type}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      Last run: {new Date(report.lastRun).toLocaleDateString()}
-                    </Typography>
-                    <Box mt={1}>
-                      {report.metrics.map((metric) => (
+                    <Box sx={{ mt: 1 }}>
+                      {template.metrics.map((metric) => (
                         <Chip
                           key={metric}
                           label={metric}
@@ -295,38 +218,118 @@ const CustomReports = () => {
                         />
                       ))}
                     </Box>
-                  </Box>
-                  <Box>
-                    <Button
-                      size="small"
-                      startIcon={<Download />}
-                    >
-                      Run
-                    </Button>
-                    <Button
-                      size="small"
-                      color="error"
-                      startIcon={<Delete />}
-                    >
-                      Delete
-                    </Button>
-                  </Box>
-                </Box>
-                <Divider sx={{ mt: 2 }} />
-              </Box>
-            ))}
-
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<Add />}
-              sx={{ mt: 2 }}
-            >
-              Create New Report
-            </Button>
-          </CardContent>
-        </Card>
+                    <Box sx={{ mt: 2 }}>
+                      <Button
+                        variant="contained"
+                        startIcon={<DownloadIcon />}
+                        onClick={() => handleGenerateReport(template)}
+                        fullWidth
+                      >
+                        Generate Report
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          ) : (
+            <Grid item xs={12}>
+              <Typography color="textSecondary" align="center">
+                No templates found. Create a new template to get started.
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
       </Grid>
+
+      {/* Create Template Dialog */}
+      <Dialog 
+        open={openDialog} 
+        onClose={() => setOpenDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        aria-labelledby="create-template-dialog"
+      >
+        <DialogTitle id="create-template-dialog">Create New Report Template</DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              fullWidth
+              label="Template Name"
+              name="name"
+              value={newTemplate.name}
+              onChange={handleTemplateChange}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              select
+              label="Report Type"
+              name="type"
+              value={newTemplate.type}
+              onChange={handleTemplateChange}
+              sx={{ mb: 2 }}
+            >
+              <MenuItem value="placement">Placement Report</MenuItem>
+              <MenuItem value="company">Company Report</MenuItem>
+              <MenuItem value="student">Student Report</MenuItem>
+            </TextField>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Select Metrics</InputLabel>
+              <Select
+                multiple
+                value={newTemplate.metrics}
+                onChange={handleMetricsChange}
+                input={<OutlinedInput label="Select Metrics" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+              >
+                {availableMetrics.map((metric) => (
+                  <MenuItem key={metric} value={metric}>
+                    <Checkbox checked={newTemplate.metrics.indexOf(metric) > -1} />
+                    <ListItemText primary={metric} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button
+            onClick={handleSaveTemplate}
+            variant="contained"
+            startIcon={<SaveIcon />}
+            disabled={!newTemplate.name || newTemplate.metrics.length === 0}
+          >
+            Save Template
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Global Loading Overlay */}
+      {loading && (
+        <Box
+          position="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bgcolor="rgba(255, 255, 255, 0.7)"
+          zIndex={9999}
+        >
+          <CircularProgress />
+        </Box>
+      )}
     </Grid>
   );
 };

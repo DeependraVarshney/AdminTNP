@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Grid, Box, Tabs, Tab, Paper } from '@mui/material';
+import { Grid, Box, Tabs, Tab, Paper, Typography } from '@mui/material';
 import PlacementReports from '../../components/admin/reports/PlacementReports';
 import CompanyReports from '../../components/admin/reports/CompanyReports';
 import StudentReports from '../../components/admin/reports/StudentReports';
@@ -14,8 +14,17 @@ const Reports = () => {
 
   return (
     <Box>
+      <Typography variant="h5" sx={{ mb: 3 }}>
+        Reports Dashboard
+      </Typography>
+
       <Paper sx={{ mb: 3 }}>
-        <Tabs value={activeTab} onChange={handleTabChange}>
+        <Tabs 
+          value={activeTab} 
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+        >
           <Tab label="Placement Reports" />
           <Tab label="Company Reports" />
           <Tab label="Student Reports" />
@@ -23,10 +32,12 @@ const Reports = () => {
         </Tabs>
       </Paper>
 
-      {activeTab === 0 && <PlacementReports />}
-      {activeTab === 1 && <CompanyReports />}
-      {activeTab === 2 && <StudentReports />}
-      {activeTab === 3 && <CustomReports />}
+      <Box sx={{ mt: 3 }}>
+        {activeTab === 0 && <PlacementReports />}
+        {activeTab === 1 && <CompanyReports />}
+        {activeTab === 2 && <StudentReports />}
+        {activeTab === 3 && <CustomReports />}
+      </Box>
     </Box>
   );
 };
