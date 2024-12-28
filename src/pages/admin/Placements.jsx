@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Typography, Grid, Card, CardContent, Button } from '@mui/material';
+import { Box, Typography, Grid, Card, CardContent, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import DataTable from '../../components/common/DataTable';
 import PlacementAnalytics from '../../components/admin/placements/PlacementAnalytics';
@@ -64,6 +64,40 @@ const Placements = () => {
     setFilters(prev => ({ ...prev, [field]: value }));
   };
 
+  const [open, setOpen] = useState(false);
+  const [newPlacement, setNewPlacement] = useState({
+    companyName: '',
+    role: '',
+    package: '',
+    openings: '',
+    startDate: '',
+  });
+
+  const [placements, setPlacements] = useState(mockData);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewPlacement(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddPlacement = () => {
+    const newId = placements.length ? placements[placements.length - 1].id + 1 : 1;
+    const newPlacementWithId = { ...newPlacement, id: newId };
+    setPlacements(prev => [...prev, newPlacementWithId]);
+    handleClose();
+  };
+
+  const handleUpdatePlacement = (id, updates) => {
+    setPlacements(prev =>
+      prev.map(placement =>
+        placement.id === id ? { ...placement, ...updates } : placement
+      )
+    );
+  };
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
@@ -71,7 +105,7 @@ const Placements = () => {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => {/* Handle add placement */}}
+          onClick={handleOpen}
         >
           Add Placement Drive
         </Button>
@@ -85,12 +119,88 @@ const Placements = () => {
       />
 
       <DataTable
-        columns={columns}
-        data={mockData}
-        pagination={mockPagination}
+        columns={[
+          ...columns,
+          {
+            field: 'actions',
+            headerName: 'Actions',
+            width: 150,
+            renderCell: (params) => (
+              <Button
+                variant="contained"
+                onClick={() => handleUpdatePlacement(params.row.id, {
+                  appliedCount: params.row.appliedCount + 1,
+                  selectedCount: params.row.selectedCount + 1,
+                  status: 'Completed'
+                })}
+              >
+                Update
+              </Button>
+            ),
+          },
+        ]}
+        data={placements}
+        pagination={{ ...mockPagination, total: placements.length }}
       />
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Add Placement Drive</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="companyName"
+            label="Company Name"
+            type="text"
+            fullWidth
+            value={newPlacement.companyName}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            name="role"
+            label="Role"
+            type="text"
+            fullWidth
+            value={newPlacement.role}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            name="package"
+            label="Package (LPA)"
+            type="text"
+            fullWidth
+            value={newPlacement.package}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            name="openings"
+            label="Openings"
+            type="number"
+            fullWidth
+            value={newPlacement.openings}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            name="startDate"
+            label="Start Date"
+            type="date"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={newPlacement.startDate}
+            onChange={handleChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleAddPlacement}>Add</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
 
-export default Placements; 
+export default Placements;
