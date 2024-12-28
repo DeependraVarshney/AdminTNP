@@ -86,6 +86,77 @@ import {
       setActiveStep((prev) => prev - 1);
     };
   
+    const handleFormChange = (section, field, value) => {
+      setFormData(prevData => ({
+        ...prevData,
+        [section]: {
+          ...prevData[section],
+          [field]: value
+        }
+      }));
+    };
+  
+    const handleAddSkill = (event) => {
+      if (event.key === 'Enter' && event.target.value.trim()) {
+        setFormData(prevData => ({
+          ...prevData,
+          companyDetails: {
+            ...prevData.companyDetails,
+            requiredSkills: [...prevData.companyDetails.requiredSkills, event.target.value.trim()]
+          }
+        }));
+        event.target.value = '';
+      }
+    };
+  
+    const handleAddSkillButton = () => {
+      const input = document.querySelector('input[placeholder="Add a skill"]');
+      if (input && input.value.trim()) {
+        setFormData(prevData => ({
+          ...prevData,
+          companyDetails: {
+            ...prevData.companyDetails,
+            requiredSkills: [...prevData.companyDetails.requiredSkills, input.value.trim()]
+          }
+        }));
+        input.value = '';
+      }
+    };
+  
+    const handleRemoveSkill = (indexToRemove) => {
+      setFormData(prevData => ({
+        ...prevData,
+        companyDetails: {
+          ...prevData.companyDetails,
+          requiredSkills: prevData.companyDetails.requiredSkills.filter((_, index) => index !== indexToRemove)
+        }
+      }));
+    };
+  
+    const handleCourseChange = (course, checked) => {
+      setFormData(prevData => ({
+        ...prevData,
+        eligibility: {
+          ...prevData.eligibility,
+          courses: checked 
+            ? [...prevData.eligibility.courses, course]
+            : prevData.eligibility.courses.filter(c => c !== course)
+        }
+      }));
+    };
+  
+    const handleBranchChange = (branch, checked) => {
+      setFormData(prevData => ({
+        ...prevData,
+        eligibility: {
+          ...prevData.eligibility,
+          branches: checked 
+            ? [...prevData.eligibility.branches, branch]
+            : prevData.eligibility.branches.filter(b => b !== branch)
+        }
+      }));
+    };
+  
     const JobDetailsForm = () => (
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
@@ -94,7 +165,16 @@ import {
             label="Job Title"
             name="jobTitle"
             value={formData.companyDetails.jobTitle}
-            onChange={(e) => handleFormChange('companyDetails', 'jobTitle', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData(prev => ({
+                ...prev,
+                companyDetails: {
+                  ...prev.companyDetails,
+                  jobTitle: value
+                }
+              }));
+            }}
             required
           />
         </Grid>
@@ -105,7 +185,16 @@ import {
             label="Job Type"
             name="jobType"
             value={formData.companyDetails.jobType}
-            onChange={(e) => handleFormChange('companyDetails', 'jobType', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData(prev => ({
+                ...prev,
+                companyDetails: {
+                  ...prev.companyDetails,
+                  jobType: value
+                }
+              }));
+            }}
             required
           >
             <MenuItem value="fullTime">Full Time</MenuItem>
@@ -120,7 +209,16 @@ import {
             label="Number of Positions"
             name="positions"
             value={formData.companyDetails.positions}
-            onChange={(e) => handleFormChange('companyDetails', 'positions', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData(prev => ({
+                ...prev,
+                companyDetails: {
+                  ...prev.companyDetails,
+                  positions: value
+                }
+              }));
+            }}
             required
           />
         </Grid>
@@ -130,7 +228,16 @@ import {
             label="Work Location"
             name="workLocation"
             value={formData.companyDetails.workLocation}
-            onChange={(e) => handleFormChange('companyDetails', 'workLocation', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData(prev => ({
+                ...prev,
+                companyDetails: {
+                  ...prev.companyDetails,
+                  workLocation: value
+                }
+              }));
+            }}
             required
           />
         </Grid>
@@ -142,7 +249,16 @@ import {
             label="Job Description"
             name="jobDescription"
             value={formData.companyDetails.jobDescription}
-            onChange={(e) => handleFormChange('companyDetails', 'jobDescription', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData(prev => ({
+                ...prev,
+                companyDetails: {
+                  ...prev.companyDetails,
+                  jobDescription: value
+                }
+              }));
+            }}
             required
           />
         </Grid>
@@ -313,7 +429,16 @@ import {
             label="CTC (LPA)"
             name="ctc"
             value={formData.compensation.ctc}
-            onChange={(e) => handleFormChange('compensation', 'ctc', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData(prev => ({
+                ...prev,
+                compensation: {
+                  ...prev.compensation,
+                  ctc: value
+                }
+              }));
+            }}
             required
           />
         </Grid>
@@ -323,7 +448,16 @@ import {
             label="Base Pay"
             name="basePay"
             value={formData.compensation.basePay}
-            onChange={(e) => handleFormChange('compensation', 'basePay', e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setFormData(prev => ({
+                ...prev,
+                compensation: {
+                  ...prev.compensation,
+                  basePay: value
+                }
+              }));
+            }}
             required
           />
         </Grid>

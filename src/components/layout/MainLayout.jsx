@@ -58,7 +58,8 @@ const MainLayout = () => {
             sx={{
                 display: 'flex',
                 height: '100vh',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                bgcolor: theme.palette.mode === 'dark' ? '#121212' : '#f5f5f5',
             }}
         >
             {/* Render both sidebars - they'll be conditionally displayed via CSS */}
@@ -76,6 +77,7 @@ const MainLayout = () => {
                     overflow: 'hidden',
                     transition: 'margin-left 0.3s ease',
                     marginLeft: { xs: 0, md: isSidebarOpen ? '240px' : '64px' },
+                    bgcolor: theme.palette.mode === 'dark' ? '#121212' : '#f5f5f5',
                 }}
             >
                 <Header 
@@ -89,6 +91,7 @@ const MainLayout = () => {
                         flexGrow: 1,
                         overflow: 'auto',
                         height: 'calc(100vh - 64px)',
+                        bgcolor: theme.palette.mode === 'dark' ? '#121212' : '#f5f5f5',
                     }}
                 >
                     <Breadcrumbs sx={{ mb: { xs: 2, sm: 3 } }} />
@@ -98,14 +101,15 @@ const MainLayout = () => {
                         disableGutters
                         sx={{ 
                             py: { xs: 2, sm: 3 },
-                            px: { xs: 1, sm: 2, md: 3 } 
+                            px: { xs: 1, sm: 2, md: 3 },
                         }}
                     >
                         <Box
                             sx={{
-                                bgcolor: theme.palette.mode === 'dark' ? '#121212' : '#f5f5f5',
+                                bgcolor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#fff',
                                 minHeight: 'calc(100vh - 88px)',
                                 borderRadius: 1,
+                                p: { xs: 2, sm: 3 },
                             }}
                         >
                             <Outlet />
@@ -115,7 +119,8 @@ const MainLayout = () => {
 
                 <Footer sx={{ 
                     py: { xs: 2, sm: 3 },
-                    px: { xs: 2, sm: 3, md: 4 } 
+                    px: { xs: 2, sm: 3, md: 4 },
+                    bgcolor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#fff',
                 }} />
             </Box>
         </Box>
