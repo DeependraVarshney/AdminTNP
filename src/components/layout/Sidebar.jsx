@@ -16,6 +16,9 @@ import {
     WorkOutline as PlacementsIcon,
     Assessment as ReportsIcon,
     Settings as SettingsIcon,
+    History,
+    Notifications as NotificationsIcon,
+    AutoFixHigh,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLayout } from '../../hooks/useLayout';
@@ -28,6 +31,9 @@ const menuItems = [
     { title: 'Placements', path: '/admin/placements', icon: <PlacementsIcon /> },
     { title: 'Reports', path: '/admin/reports', icon: <ReportsIcon /> },
     { title: 'Settings', path: '/admin/settings', icon: <SettingsIcon /> },
+    { title: 'Audit Logs', path: '/admin/audit', icon: <History /> },
+    { title: 'Notifications', path: '/admin/notifications', icon: <NotificationsIcon /> },
+    { title: 'Automation', path: '/admin/automation', icon: <AutoFixHigh /> },
 ];
 
 const Sidebar = ({ open, onClose, variant = 'permanent', mobile, sx }) => {

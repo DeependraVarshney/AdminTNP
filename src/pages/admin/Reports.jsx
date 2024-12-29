@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Grid, Box, Tabs, Tab, Paper, Typography } from '@mui/material';
+import { Grid, Box, Tabs, Tab, Paper, Typography, useTheme } from '@mui/material';
 import PlacementReports from '../../components/admin/reports/PlacementReports';
 import CompanyReports from '../../components/admin/reports/CompanyReports';
 import StudentReports from '../../components/admin/reports/StudentReports';
@@ -7,6 +7,7 @@ import CustomReports from '../../components/admin/reports/CustomReports';
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const theme = useTheme();
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -14,7 +15,14 @@ const Reports = () => {
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ mb: 3 }}>
+      <Typography 
+        variant="h5" 
+        gutterBottom
+        sx={{ 
+          color: theme.palette.text.primary,
+          mb: 3 
+        }}
+      >
         Reports Dashboard
       </Typography>
 

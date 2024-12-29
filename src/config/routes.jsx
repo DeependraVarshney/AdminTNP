@@ -10,12 +10,13 @@ const Templates = lazy(() => import('../pages/admin/Templates'));
 const Reports = lazy(() => import('../pages/admin/Reports'));
 const Profile = lazy(() => import('../pages/admin/Profile'));
 const Settings = lazy(() => import('../pages/admin/Settings'));
-
+const Audit = lazy(() => import('../pages/admin/Audit'));
+const Automation = lazy(() => import('../pages/admin/Automation'));
 // Auth Pages
 const Login = lazy(() => import('../pages/auth/Login'));
 const ForgotPassword = lazy(() => import('../pages/auth/ForgotPassword'));
 const ResetPassword = lazy(() => import('../pages/auth/ResetPassword'));
-
+const Notifications = lazy(() => import('../pages/admin/Notifications'));
 // Error Pages
 const Error404 = lazy(() => import('../pages/Error404'));
 
@@ -44,8 +45,20 @@ const routes = [
         element: Placements,
       },
       {
+        path: 'notifications',
+        element: Notifications,
+      },
+      {
         path: 'templates',
         element: Templates,
+      },
+      {
+        path: 'automation',
+        element: Automation,
+      },
+      {
+        path: 'audit',
+        element: Audit,
       },
       {
         path: 'reports',

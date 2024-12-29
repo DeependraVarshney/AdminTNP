@@ -5,21 +5,23 @@ import CompanyVisitManager from '../../components/admin/company/CompanyVisitMana
 import CompanyList from '../../components/admin/company/CompanyList';
 import CompanyDetails from '../../components/admin/company/CompanyDetails';
 import CompanyRegistration from '../../components/admin/company/CompanyRegistration';
+import { useSearchParams } from 'react-router-dom';
 
 const Companies = () => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentTab = parseInt(searchParams.get('tab') || '0');
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
 
   const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
+    setSearchParams({ tab: newValue.toString() });
   };
 
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Paper sx={{ flexGrow: 1, mr: 2 }}>
-          <Tabs value={activeTab} onChange={handleTabChange}>
+          <Tabs value={currentTab} onChange={handleTabChange}>
             <Tab label="Companies List" />
             <Tab label="Upcoming Visits" />
             <Tab label="Visit History" />
@@ -34,16 +36,16 @@ const Companies = () => {
         </Button>
       </Box>
 
-      {activeTab === 0 && (
+      {currentTab === 0 && (
         <CompanyList 
           onCompanySelect={setSelectedCompany}
           selectedCompany={selectedCompany}
         />
       )}
       
-      {activeTab === 1 && <CompanyVisitManager type="upcoming" />}
+      {currentTab === 1 && <CompanyVisitManager type="upcoming" />}
       
-      {activeTab === 2 && <CompanyVisitManager type="history" />}
+      {currentTab === 2 && <CompanyVisitManager type="history" />}
 
       {/* Company Details Dialog */}
       {selectedCompany && (

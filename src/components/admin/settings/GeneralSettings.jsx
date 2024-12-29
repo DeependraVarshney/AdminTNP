@@ -16,8 +16,10 @@ import {
 } from '@mui/material';
 import { Save } from '@mui/icons-material';
 import { useState } from 'react';
+import { useAudit } from '../../../hooks/useAudit';
 
 const GeneralSettings = () => {
+  const { logEvent } = useAudit();
   const [settings, setSettings] = useState({
     instituteName: 'ABC Institute of Technology',
     address: '123 College Road, City',
@@ -44,6 +46,15 @@ const GeneralSettings = () => {
   const handleSave = () => {
     console.log('Saving settings:', settings);
     // Handle save logic
+  };
+
+  const handleSettingChange = async (setting, value) => {
+    try {
+      await updateSetting(setting, value);
+      logEvent('update', 'Settings', `Updated ${setting} to ${value}`);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

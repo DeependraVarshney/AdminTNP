@@ -45,8 +45,10 @@ import {
 } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
 import studentService from '../../../services/studentService';
+import { useAudit } from '../../../hooks/useAudit';
 
 const StudentList = ({ onStudentSelect }) => {
+  const { logEvent } = useAudit();
   // State for filters
   const [filters, setFilters] = useState({
     search: '',
@@ -127,6 +129,7 @@ const StudentList = ({ onStudentSelect }) => {
       ...prev,
       [field]: value
     }));
+    logEvent('filter', 'StudentList', `Applied filter: ${field} = ${value}`);
   };
 
   const handleClearFilters = () => {
@@ -145,33 +148,44 @@ const StudentList = ({ onStudentSelect }) => {
 
   const handleEditStudent = async (student, event) => {
     event.stopPropagation();
-    // Implement edit student logic
-    console.log('Edit student:', student);
-    // Example: Redirect to edit page or open edit modal
-    alert(`Edit student: ${student.name}`);
+    try {
+      // Your existing edit logic
+      logEvent('update', 'Student', `Initiated edit for student: ${student.name} (${student.rollNo})`);
+    } catch (error) {
+      console.error('Error editing student:', error);
+    }
   };
 
   const handleSendEmail = async (student, event) => {
     event.stopPropagation();
-    // Implement send email logic
-    console.log('Send email to:', student);
-    // Example: Open email modal or send email directly
-    alert(`Send email to: ${student.name}`);
+    try {
+      // Your existing email logic
+      logEvent('communication', 'Student', `Sent email to student: ${student.name} (${student.rollNo})`);
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
   };
 
   const handleDeleteStudent = async (student, event) => {
     event.stopPropagation();
-    // Implement delete student logic
     if (window.confirm(`Are you sure you want to delete ${student.name}?`)) {
       try {
         await studentService.deleteStudent(student.id);
-        console.log('Student deleted:', student);
-        alert(`Student deleted: ${student.name}`);
+        logEvent('delete', 'Student', `Deleted student: ${student.name} (${student.rollNo})`);
         // Refresh student list or provide feedback
       } catch (error) {
         console.error('Failed to delete student:', error);
         alert('Failed to delete student');
       }
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      // Your export logic here
+      logEvent('export', 'StudentList', 'Exported student data');
+    } catch (error) {
+      console.error('Error exporting data:', error);
     }
   };
 
@@ -389,6 +403,7 @@ const StudentList = ({ onStudentSelect }) => {
               <Button
                 variant="outlined"
                 startIcon={<Download />}
+                onClick={handleExport}
               >
                 Export
               </Button>

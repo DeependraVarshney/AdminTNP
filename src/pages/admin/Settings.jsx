@@ -5,12 +5,14 @@ import UserManagement from '../../components/admin/settings/UserManagement';
 import EmailSettings from '../../components/admin/settings/EmailSettings';
 import SecuritySettings from '../../components/admin/settings/SecuritySettings';
 import BackupSettings from '../../components/admin/settings/BackupSettings';
+import { useSearchParams } from 'react-router-dom';
 
 const Settings = () => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = parseInt(searchParams.get('tab') || '0');
 
   const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
+    setSearchParams({ tab: newValue.toString() });
   };
 
   return (

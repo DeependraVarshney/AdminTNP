@@ -6,16 +6,16 @@ import StudentBulkUpload from '../../components/admin/students/StudentBulkUpload
 import StudentAnalytics from '../../components/admin/students/StudentAnalytics';
 import StudentDetailsView from '../../components/admin/students/StudentDetailsView';
 import StudentProfileManager from '../../components/admin/students/StudentProfileManager';
+import { useSearchParams } from 'react-router-dom';
 
 const Students = () => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentTab = parseInt(searchParams.get('tab') || '0');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
-    setSelectedStudent(null);
-    setIsEditing(false);
+    setSearchParams({ tab: newValue.toString() });
   };
 
   const handleStudentSelect = (student) => {
@@ -43,7 +43,7 @@ const Students = () => {
     <Box>
       <Paper sx={{ mb: 3 }}>
         <Tabs 
-          value={selectedStudent ? -1 : activeTab} 
+          value={selectedStudent ? -1 : currentTab} 
           onChange={handleTabChange}
         >
           <Tab label="All Students" />
@@ -69,10 +69,10 @@ const Students = () => {
         )
       ) : (
         <>
-          {activeTab === 0 && <StudentList onStudentSelect={handleStudentSelect} />}
-          {activeTab === 1 && <StudentRegistration />}
-          {activeTab === 2 && <StudentBulkUpload />}
-          {activeTab === 3 && <StudentAnalytics />}
+          {currentTab === 0 && <StudentList onStudentSelect={handleStudentSelect} />}
+          {currentTab === 1 && <StudentRegistration />}
+          {currentTab === 2 && <StudentBulkUpload />}
+          {currentTab === 3 && <StudentAnalytics />}
         </>
       )}
     </Box>
