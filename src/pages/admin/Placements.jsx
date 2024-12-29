@@ -4,8 +4,8 @@ import { Add as AddIcon } from '@mui/icons-material';
 import DataTable from '../../components/common/DataTable';
 import PlacementAnalytics from '../../components/admin/placements/PlacementAnalytics';
 import PlacementFilters from '../../components/admin/placements/PlacementFilters';
-import { useTable } from '../../hooks/useTable';
-import { usePlacement } from '../../hooks/usePlacement';
+import { useTable } from '../../hooks/admin/useTable';
+import { usePlacement } from '../../hooks/admin/usePlacement';
 
 const Placements = () => {
   const { getPlacements } = usePlacement();

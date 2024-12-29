@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import companyService from '../../services/companyService';
+import companyService from '../../../services/admin/companyService';
 
 const initialState = {
   companies: [],

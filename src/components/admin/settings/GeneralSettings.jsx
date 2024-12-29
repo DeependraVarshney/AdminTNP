@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { Save } from '@mui/icons-material';
 import { useState } from 'react';
-import { useAudit } from '../../../hooks/useAudit';
+import { useAudit } from '../../../hooks/admin/useAudit';
 
 const GeneralSettings = () => {
   const { logEvent } = useAudit();

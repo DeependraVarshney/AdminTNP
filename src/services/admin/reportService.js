@@ -1,5 +1,5 @@
-import axios from '../config/axios';
-import { API_BASE_URL } from '../config/constants';
+import axios from '../../config/axios';
+import { API_BASE_URL } from '../../config/constants';
 
 // Mock data for testing until backend integration
 const mockPlacementData = {

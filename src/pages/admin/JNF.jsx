@@ -5,8 +5,8 @@ import DataTable from '../../components/common/DataTable';
 import JNFAnalytics from '../../components/admin/jnf/JNFAnalytics';
 import JNFFilters from '../../components/admin/jnf/JNFFilters';
 import JNFForm from '../../components/admin/jnf/JNFForm';
-import { useJNF } from '../../hooks/useJNF';
-import { useModal } from '../../hooks/useModal';
+import { useJNF } from '../../hooks/admin/useJNF';
+import { useModal } from '../../hooks/admin/useModal';
 
 const JNF = () => {
   // Mock data for development

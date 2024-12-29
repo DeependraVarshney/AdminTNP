@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import studentService from '../../services/studentService';
+import studentService from '../../../services/admin/studentService';
 
 const initialState = {
   students: [],

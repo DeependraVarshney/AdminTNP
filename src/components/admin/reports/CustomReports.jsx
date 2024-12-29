@@ -31,7 +31,7 @@ import {
   Save as SaveIcon,
   Download as DownloadIcon,
 } from '@mui/icons-material';
-import reportService from '../../../services/reportService';
+import reportService from '../../../services/admin/reportService';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

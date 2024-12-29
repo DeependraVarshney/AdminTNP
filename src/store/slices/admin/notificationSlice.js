@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import notificationService from '../../services/notificationService';
+import notificationService from '../../../services/admin/notificationService';
 
 const initialState = {
   notifications: [],

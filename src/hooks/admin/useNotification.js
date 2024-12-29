@@ -4,7 +4,7 @@ import {
   fetchNotifications,
   markAsRead,
   deleteNotifications,
-} from '../store/slices/notificationSlice';
+} from '../../store/slices/admin/notificationSlice';
 
 export const useNotification = () => {
   const { enqueueSnackbar } = useSnackbar();

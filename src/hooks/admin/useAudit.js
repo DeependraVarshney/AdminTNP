@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { auditService } from '../services/auditService';
+import { auditService } from '../../services/admin/auditService';
 
 export const useAudit = () => {
   const logEvent = useCallback(async (action, resource, details) => {

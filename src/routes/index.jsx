@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
-import MainLayout from '../components/layout/MainLayout';
+import MainLayout from '../components/layout/admin/MainLayout';
 import AuthLayout from '../components/layout/AuthLayout';
-import routes from '../config/routes';
+import routes from './routes';
 import Error404 from '../pages/Error404';
 import Settings from '../pages/admin/Settings';
 

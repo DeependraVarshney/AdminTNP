@@ -5,8 +5,8 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 import Breadcrumbs from './Breadcrumbs';
-import { useLayout } from '../../hooks/useLayout';
-import { useLayoutContext } from '../../contexts/LayoutContext';
+import { useLayout } from '../../../hooks/admin/useLayout';
+import { useLayoutContext } from '../../../contexts/admin/LayoutContext';
 
 const MainLayout = () => {
     const theme = useTheme();

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import reportService from '../../services/reportService';
+import reportService from '../../../services/admin/reportService';
 
 const initialState = {
   reports: [],

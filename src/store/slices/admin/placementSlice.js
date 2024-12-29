@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import placementService from '../../services/placementService';
+import placementService from '../../../services/admin/placementService';
 
 const initialState = {
   placements: [],

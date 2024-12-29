@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNotification } from './useNotification';
-import templateService from '../services/templateService';
+import templateService from '../../services/admin/templateService';
 
 export const useTemplate = () => {
   const dispatch = useDispatch();

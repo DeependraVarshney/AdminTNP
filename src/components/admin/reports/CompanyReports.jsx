@@ -31,7 +31,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import reportService from '../../../services/reportService';
+import reportService from '../../../services/admin/reportService';
 import FilterDebug from '../../common/FilterDebug';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];

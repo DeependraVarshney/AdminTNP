@@ -21,7 +21,7 @@ import {
     AutoFixHigh,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useLayout } from '../../hooks/useLayout';
+import { useLayout } from '../../../hooks/admin/useLayout';
 
 const menuItems = [
     { title: 'Dashboard', path: '/admin/dashboard', icon: <DashboardIcon /> },

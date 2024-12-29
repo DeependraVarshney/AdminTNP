@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import templateService from '../../services/templateService';
+import templateService from '../../../services/admin/templateService';
 
 const initialState = {
   templates: [],

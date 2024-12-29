@@ -21,9 +21,9 @@ import {
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLayout } from '../../hooks/useLayout';
-import { useAuth } from '../../hooks/useAuth';
-import { useTheme as useAppTheme } from '../../contexts/ThemeContext';
+import { useLayout } from '../../../hooks/admin/useLayout';
+import { useAuth } from '../../../hooks/useAuth';
+import { useTheme as useAppTheme } from '../../../contexts/admin/ThemeContext';
 
 const Header = () => {
   const theme = useTheme();

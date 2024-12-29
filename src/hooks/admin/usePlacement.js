@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNotification } from './useNotification';
-import placementService from '../services/placementService';
+import placementService from '../../services/admin/placementService';
 
 export const usePlacement = () => {
   const dispatch = useDispatch();

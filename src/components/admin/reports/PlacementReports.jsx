@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Download, FilterList } from '@mui/icons-material';
-import reportService from '../../../services/reportService';
+import reportService from '../../../services/admin/reportService';
 import {
   BarChart,
   Bar,

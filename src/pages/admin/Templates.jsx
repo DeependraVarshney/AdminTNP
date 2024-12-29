@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import DataTable from '../../components/common/DataTable';
-import { useTable } from '../../hooks/useTable';
-import { useTemplate } from '../../hooks/useTemplate';
+import { useTable } from '../../hooks/admin/useTable';
+import { useTemplate } from '../../hooks/admin/useTemplate';
 
 const Templates = () => {
   const { getTemplates } = useTemplate();

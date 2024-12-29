@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { useNotification } from '../hooks/useNotification';
+import { useNotification } from '../hooks/admin/useNotification';
 
 const AuthContext = createContext({
   isInitialized: false,

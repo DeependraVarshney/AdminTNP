@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import settingsService from '../../services/settingsService';
+import settingsService from '../../../services/admin/settingsService';
 
 const initialState = {
   settings: {

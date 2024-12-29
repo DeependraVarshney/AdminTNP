@@ -2,8 +2,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { SnackbarProvider } from 'notistack';
 import { store } from './store';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { LayoutProvider } from './contexts/LayoutContext';
+import { ThemeProvider } from './contexts/admin/ThemeContext';
+import { LayoutProvider } from './contexts/admin/LayoutContext';
 import { AuthProvider } from './contexts/AuthContext';
 import AppRoutes from './routes';
 

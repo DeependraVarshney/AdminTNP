@@ -22,7 +22,7 @@ import {
   Alert
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
-import { useAudit } from '../../../hooks/useAudit';
+import { useAudit } from '../../../hooks/admin/useAudit';
 
 export const WorkflowAutomation = () => {
   const { logEvent } = useAudit();

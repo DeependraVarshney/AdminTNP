@@ -1,5 +1,5 @@
-import axios from '../config/axios';
-import { API_BASE_URL } from '../config/constants';
+import axios from '../../config/axios';
+import { API_BASE_URL } from '../../config/constants';
 
 const companyService = {
   getCompanies: async (filters, pagination) => {

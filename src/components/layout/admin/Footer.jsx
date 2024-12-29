@@ -1,5 +1,5 @@
 import { Box, Typography, Link, useTheme } from '@mui/material';
-import { APP_CONFIG } from '../../config/constants';
+import { APP_CONFIG } from '../../../config/constants';
 
 const Footer = () => {
   const theme = useTheme();

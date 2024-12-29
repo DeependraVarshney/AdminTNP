@@ -45,7 +45,7 @@ import {
 } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
 import studentService from '../../../services/studentService';
-import { useAudit } from '../../../hooks/useAudit';
+import { useAudit } from '../../../hooks/admin/useAudit';
 
 const StudentList = ({ onStudentSelect }) => {
   const { logEvent } = useAudit();
