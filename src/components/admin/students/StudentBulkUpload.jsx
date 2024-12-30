@@ -25,7 +25,7 @@ import {
   Refresh
 } from '@mui/icons-material';
 import { useState } from 'react';
-import studentService from '../../../services/studentService';
+import studentService from '../../../services/admin/studentService';
 import { API_BASE_URL } from '../../../config/constants';
 
 const StudentBulkUpload = () => {

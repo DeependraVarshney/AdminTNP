@@ -36,7 +36,7 @@ import {
   CheckCircle
 } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
-import studentService from '../../../services/studentService';
+import studentService from '../../../services/admin/studentService';
 
 const StudentDetailsView = ({ studentId }) => {
   const [activeTab, setActiveTab] = useState(0);

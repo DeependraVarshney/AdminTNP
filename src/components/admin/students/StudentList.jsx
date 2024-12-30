@@ -44,7 +44,7 @@ import {
   MoreVert
 } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
-import studentService from '../../../services/studentService';
+import studentService from '../../../services/admin/studentService';
 import { useAudit } from '../../../hooks/admin/useAudit';
 
 const StudentList = ({ onStudentSelect }) => {

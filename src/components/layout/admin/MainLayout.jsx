@@ -55,6 +55,7 @@ const MainLayout = () => {
 
     return (
         <Box 
+            className="admin-layout"
             sx={{
                 display: 'flex',
                 height: '100vh',

@@ -16,20 +16,21 @@ code {
     monospace;
 }
 
-::-webkit-scrollbar {
+/* Admin-specific styles */
+[class*="admin-"] ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-::-webkit-scrollbar-track {
+[class*="admin-"] ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-::-webkit-scrollbar-thumb {
+[class*="admin-"] ::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+[class*="admin-"] ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
