@@ -11,7 +11,7 @@ export const useLayoutContext = () => {
   return context;
 };
 
-export const LayoutProvider = ({ children }) => {
+export const AdminLayoutProvider = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -30,4 +30,4 @@ export const LayoutProvider = ({ children }) => {
   );
 };
 
-export default LayoutProvider;
+export default AdminLayoutProvider;

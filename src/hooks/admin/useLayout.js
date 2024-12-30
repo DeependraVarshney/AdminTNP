@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { LayoutContext } from '../../contexts/admin/LayoutContext';
+import { LayoutContext } from '../../contexts/admin/AdminLayoutContext';
 
 export const useLayout = () => {
   const context = useContext(LayoutContext);

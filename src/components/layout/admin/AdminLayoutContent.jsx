@@ -6,9 +6,11 @@ import Sidebar from './Sidebar';
 import Footer from './Footer';
 import Breadcrumbs from './Breadcrumbs';
 import { useLayout } from '../../../hooks/admin/useLayout';
-import { useLayoutContext } from '../../../contexts/admin/LayoutContext';
+import { useLayoutContext } from '../../../contexts/admin/AdminLayoutContext';
 
-const MainLayout = () => {
+
+// Separate the layout content into its own component
+const AdminLayoutContent = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { isSidebarOpen, toggleSidebar } = useLayout();
@@ -63,11 +65,9 @@ const MainLayout = () => {
                 bgcolor: theme.palette.mode === 'dark' ? '#121212' : '#f5f5f5',
             }}
         >
-            {/* Render both sidebars - they'll be conditionally displayed via CSS */}
             <MobileSidebar />
             <DesktopSidebar />
 
-            {/* Main Content */}
             <Box
                 component="main"
                 sx={{
@@ -127,5 +127,4 @@ const MainLayout = () => {
         </Box>
     );
 };
-
-export default MainLayout; 
+export default AdminLayoutContent;

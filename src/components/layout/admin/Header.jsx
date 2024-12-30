@@ -23,7 +23,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLayout } from '../../../hooks/admin/useLayout';
 import { useAuth } from '../../../hooks/useAuth';
-import { useTheme as useAppTheme } from '../../../contexts/admin/ThemeContext';
+import { useTheme as useAppTheme } from '../../../contexts/admin/AdminThemeContext';
 
 const Header = () => {
   const theme = useTheme();
